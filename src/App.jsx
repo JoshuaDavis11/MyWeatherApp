@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { TodayForecast } from './components/TodayForecast';
 
 function App() {
   const [location, setLocation] = useState(null);
@@ -27,37 +28,23 @@ function App() {
     const fetchWeather = async () => {
       try {
         const res = await fetch(
-          `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_API_KEY}&q=${location.latitude},${location.longitude}`
+          `http://localhost:5000/api/weather?lat=${location.latitude}&lon=${location.longitude}`
         );
         const data = await res.json();
         setWeather(data);
       } catch (err) {
-        setError('Failed to fetch weather data.' + err);
+        setError('Failed to fetch weather data. Error: ' + err);
       }
     };
 
     fetchWeather();
   }, [location]); 
 
+
+  
   return (
     <div>
-      <h1>Weather App</h1>
-
-      {error && <p>{error}</p>}
-
-      {!location && !error && <p>Getting your location...</p>}
-
-      {location && !weather && <p>Fetching weather data...</p>}
-
-      {weather && (
-        <div>
-          <p>
-            Location: {weather.location.name}, {weather.location.country}
-          </p>
-          <p>Temperature: {weather.current.temp_c}°C</p>
-          <p>Condition: {weather.current.condition.text}</p>
-        </div>
-      )}
+      <TodayForecast weather={weather} error={error}/>
     </div>
   );
 }
